@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://jvbarreto.github.io/sitemap.xml 
