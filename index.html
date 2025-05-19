@@ -6,21 +6,44 @@
     <meta name="description" content="Portfólio profissional de João Vitor Barreto Rios - Desenvolvedor Full Stack em formação, especializado em desenvolvimento web e soluções inovadoras">
     <meta name="author" content="João Vitor Barreto Rios">
     <meta name="keywords" content="desenvolvedor, programador, full stack, João Vitor Barreto Rios, portfolio, desenvolvimento web, HTML, CSS, JavaScript, Java, Python">
+    
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://jvbarreto.github.io">
+    
+    <!-- Open Graph / Social Media -->
     <meta property="og:title" content="João Vitor Barreto Rios - Desenvolvedor Full Stack">
     <meta property="og:description" content="Portfólio profissional de João Vitor Barreto Rios, desenvolvedor Full Stack em formação">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://jvbarreto.github.io">
+    <meta property="og:image" content="https://jvbarreto.github.io/assets/images/profile.jpg">
+    
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="João Vitor Barreto Rios - Desenvolvedor Full Stack">
+    <meta name="twitter:description" content="Portfólio profissional de João Vitor Barreto Rios, desenvolvedor Full Stack em formação">
+    <meta name="twitter:image" content="https://jvbarreto.github.io/assets/images/profile.jpg">
+    
     <title>João Vitor Barreto Rios | Desenvolvedor Full Stack</title>
     
-    <!-- Estilos -->
+    <!-- Preload Critical Resources -->
+    <link rel="preload" href="css/style.css" as="style">
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" as="style">
+    <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" as="style">
+    <link rel="preload" href="js/script.js" as="script">
+    
+    <!-- Styles -->
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
+    <!-- Libraries -->
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12"></script>
+    
     <!-- Favicon -->
-    <link rel="icon" type="image/png" href="assets/icons/favicon.png">
+    <link rel="icon" type="image/svg+xml" href="assets/icons/favicon.svg">
     
     <!-- Schema.org markup -->
     <script type="application/ld+json">
@@ -33,6 +56,21 @@
         "sameAs": [
             "https://www.linkedin.com/in/vitor-barretodev",
             "https://github.com/JVbarreto"
+        ],
+        "alumniOf": {
+            "@type": "CollegeOrUniversity",
+            "name": "UNIFACS",
+            "url": "https://www.unifacs.br"
+        },
+        "knowsAbout": [
+            "HTML",
+            "CSS",
+            "JavaScript",
+            "Java",
+            "Python",
+            "SQL",
+            "Web Development",
+            "Technical Support"
         ]
     }
     </script>
@@ -42,26 +80,26 @@
     <a href="#main-content" class="skip-link">Pular para o conteúdo principal</a>
 
     <!-- Header -->
-    <header class="header" role="banner">
-        <nav class="nav-container" role="navigation">
-            <a href="#home" class="logo">JV</a>
+    <header class="header glass" role="banner">
+        <nav class="nav-container" role="navigation" aria-label="Menu principal">
+            <a href="#home" class="logo" aria-label="Início">JV</a>
             
-            <button class="mobile-menu" aria-label="Menu de navegação">
+            <button class="mobile-menu" aria-label="Abrir menu de navegação" aria-expanded="false" aria-controls="nav-menu">
                 <span></span>
                 <span></span>
                 <span></span>
             </button>
 
-            <ul class="nav-menu">
-                <li><a href="#home">Início</a></li>
-                <li><a href="#sobre">Sobre</a></li>
-                <li><a href="#experiencia">Experiência</a></li>
-                <li><a href="#competencias">Competências</a></li>
-                <li><a href="#certificacoes">Certificações</a></li>
-                <li><a href="#contato">Contato</a></li>
+            <ul class="nav-menu" id="nav-menu" role="menubar">
+                <li role="none"><a href="#home" role="menuitem">Início</a></li>
+                <li role="none"><a href="#sobre" role="menuitem">Sobre</a></li>
+                <li role="none"><a href="#experiencia" role="menuitem">Experiência</a></li>
+                <li role="none"><a href="#competencias" role="menuitem">Competências</a></li>
+                <li role="none"><a href="#certificacoes" role="menuitem">Certificações</a></li>
+                <li role="none"><a href="#contato" role="menuitem">Contato</a></li>
             </ul>
 
-            <button class="theme-toggle" aria-label="Alternar tema">
+            <button class="theme-toggle" aria-label="Alternar tema claro/escuro">
                 <i class="fas fa-moon"></i>
             </button>
         </nav>
@@ -71,10 +109,11 @@
     <main id="main-content">
         <!-- Hero Section -->
         <section id="home" class="hero">
+            <div id="particles-js" class="particles-container"></div>
             <div class="container">
-                <div class="hero-content">
+                <div class="hero-content reveal">
                     <h1>João Vitor Barreto Rios</h1>
-                    <p class="subtitle">Desenvolvedor Full Stack em formação</p>
+                    <p id="typed-text" class="subtitle"></p>
                     <p class="description">
                         Estudante de Análise e Desenvolvimento de Sistemas, apaixonado por tecnologia 
                         e desenvolvimento de software. Focado em criar soluções inovadoras e eficientes.
@@ -83,6 +122,27 @@
                         <a href="#contato" class="btn btn-primary">Entre em Contato</a>
                         <a href="#projetos" class="btn btn-secondary">Ver Projetos</a>
                     </div>
+                    <div class="social-links">
+                        <a href="https://github.com/JVbarreto" 
+                           target="_blank" 
+                           class="social-link github" 
+                           aria-label="GitHub"
+                           rel="noopener noreferrer">
+                            <i class="fab fa-github"></i>
+                        </a>
+                        <a href="https://www.linkedin.com/in/vitor-barretodev" 
+                           target="_blank" 
+                           class="social-link linkedin" 
+                           aria-label="LinkedIn"
+                           rel="noopener noreferrer">
+                            <i class="fab fa-linkedin-in"></i>
+                        </a>
+                        <a href="mailto:vitorbarreto1432@gmail.com" 
+                           class="social-link email" 
+                           aria-label="Email">
+                            <i class="fas fa-envelope"></i>
+                        </a>
+                    </div>
                 </div>
             </div>
         </section>
@@ -90,33 +150,54 @@
         <!-- Sobre Section -->
         <section id="sobre" class="about">
             <div class="container">
-                <h2 class="section-title">Sobre Mim</h2>
-                <div class="about-content">
+                <h2 class="section-title reveal">Sobre Mim</h2>
+                <div class="about-content reveal">
                     <div class="about-text">
                         <p>
-                            Sou estudante do quinto semestre do curso de Análise e Desenvolvimento de Sistemas 
-                            pela UNIFACS, com 21 anos de idade. Possuo conhecimentos em HTML, CSS, JavaScript, 
-                            além de experiência acadêmica com Java, Python e SQL.
+                            Estudante do 5º semestre do curso de Análise e Desenvolvimento de Sistemas pela UNIFACS, 
+                            com sólida base em desenvolvimento web (HTML, CSS, JavaScript) e experiência prática em 
+                            Java, Python e SQL adquirida em projetos acadêmicos.
                         </p>
                         <p>
-                            Atuo com suporte técnico na área de redes de computadores e tenho familiaridade 
-                            com conceitos introdutórios de inteligência artificial. Busco uma oportunidade 
-                            profissional na área de programação.
+                            Atualmente, estudo Inteligência Artificial com foco em sua implementação em aplicações práticas, 
+                            buscando compreender algoritmos, ferramentas e possibilidades reais de uso em soluções digitais.
+                        </p>
+                        <p>
+                            Possuo conhecimento intermediário em redes Wi-Fi corporativas, com experiência em monitoramento, 
+                            configuração de APs, análise de tráfego e troubleshooting utilizando a plataforma Ruijie Cloud. 
+                            Familiaridade com ambientes de infraestrutura de rede e suporte técnico.
+                        </p>
+                        <p>
+                            Sou proativo, com raciocínio lógico bem desenvolvido e interesse contínuo em aprender novas tecnologias. 
+                            Busco oportunidades em equipes colaborativas, onde possa contribuir com soluções inovadoras e crescer 
+                            profissionalmente nas áreas de desenvolvimento de software, análise de dados, redes e inteligência artificial.
                         </p>
                     </div>
                     <div class="about-info">
-                        <div class="info-item">
+                        <div class="info-card">
+                            <div class="info-icon">
+                                <i class="fas fa-graduation-cap"></i>
+                            </div>
                             <h3>Formação</h3>
-                            <p>ADS - UNIFACS (2023-2025)</p>
+                            <p>Análise e Desenvolvimento</p>
+                            <p>de Sistemas - UNIFACS</p>
+                            <p class="info-detail">(2023-2025)</p>
                         </div>
-                        <div class="info-item">
+                        <div class="info-card">
+                            <div class="info-icon">
+                                <i class="fas fa-map-marker-alt"></i>
+                            </div>
                             <h3>Localização</h3>
-                            <p>Feira de Santana, BA</p>
+                            <p>Feira de Santana,</p>
+                            <p class="info-detail">BA</p>
                         </div>
-                        <div class="info-item">
+                        <div class="info-card">
+                            <div class="info-icon">
+                                <i class="fas fa-language"></i>
+                            </div>
                             <h3>Idiomas</h3>
                             <p>Português (Nativo)</p>
-                            <p>Inglês (Intermediário)</p>
+                            <p class="info-detail">Inglês (Intermediário)</p>
                         </div>
                     </div>
                 </div>
@@ -126,9 +207,9 @@
         <!-- Experiência Section -->
         <section id="experiencia" class="experience">
             <div class="container">
-                <h2 class="section-title">Experiência Profissional</h2>
+                <h2 class="section-title reveal">Experiência Profissional</h2>
                 <div class="timeline">
-                    <div class="timeline-item">
+                    <div class="timeline-item card reveal">
                         <div class="timeline-content">
                             <h3>Nobre Network</h3>
                             <p class="position">Suporte Técnico</p>
@@ -139,7 +220,7 @@
                             </p>
                         </div>
                     </div>
-                    <div class="timeline-item">
+                    <div class="timeline-item card reveal">
                         <div class="timeline-content">
                             <h3>Calbos Saúde Animal</h3>
                             <p class="position">Auxiliar de Logística</p>
@@ -153,10 +234,246 @@
             </div>
         </section>
 
+        <!-- Network Management Section -->
+        <section id="network" class="network">
+            <div class="container">
+                <h2 class="section-title reveal">Experiência com Gerenciamento de Redes</h2>
+                <div class="network-content reveal">
+                    <div class="network-description">
+                        <p>
+                            Possuo conhecimento intermediário em gerenciamento de redes Wi-Fi corporativas, 
+                            com experiência prática na plataforma Ruijie Cloud. Minhas atividades incluem 
+                            monitoramento em tempo real, análise detalhada de tráfego, configuração e 
+                            otimização de Access Points, e resolução proativa de problemas de conectividade.
+                        </p>
+                    </div>
+
+                    <div class="skills-cloud">
+                        <div class="skill-tag">
+                            <i class="fas fa-cloud"></i>
+                            <span>Ruijie Cloud</span>
+                        </div>
+                        <div class="skill-tag">
+                            <i class="fas fa-wifi"></i>
+                            <span>Redes Wi-Fi</span>
+                        </div>
+                        <div class="skill-tag">
+                            <i class="fas fa-tools"></i>
+                            <span>Troubleshooting</span>
+                        </div>
+                        <div class="skill-tag">
+                            <i class="fas fa-chart-line"></i>
+                            <span>Análise de Tráfego</span>
+                        </div>
+                        <div class="skill-tag">
+                            <i class="fas fa-broadcast-tower"></i>
+                            <span>Configuração de APs</span>
+                        </div>
+                        <div class="skill-tag">
+                            <i class="fas fa-cogs"></i>
+                            <span>Configuração de CPE</span>
+                        </div>
+                    </div>
+
+                    <div class="network-project card">
+                        <div class="project-header">
+                            <i class="fas fa-network-wired"></i>
+                            <h3>Monitoramento de Rede com Ruijie Cloud</h3>
+                        </div>
+                        <div class="project-content">
+                            <div class="project-section">
+                                <h4>Descrição</h4>
+                                <p>
+                                    Implementação de sistema de monitoramento e gerenciamento de rede Wi-Fi 
+                                    corporativa utilizando a plataforma Ruijie Cloud, com foco em performance, 
+                                    segurança e experiência do usuário.
+                                </p>
+                            </div>
+                            <div class="project-section">
+                                <h4>Atividades Realizadas</h4>
+                                <ul>
+                                    <li>Configuração e otimização de múltiplos Access Points</li>
+                                    <li>Monitoramento em tempo real de métricas de rede</li>
+                                    <li>Análise e resolução de problemas de conectividade</li>
+                                    <li>Implementação de políticas de segurança</li>
+                                    <li>Configuração e gerenciamento de CPE para otimização de rede</li>
+                                </ul>
+                            </div>
+                            <div class="project-section">
+                                <h4>Resultados</h4>
+                                <ul>
+                                    <li>Redução de 40% em tickets de suporte relacionados à conectividade</li>
+                                    <li>Melhoria significativa na cobertura e estabilidade da rede</li>
+                                    <li>Otimização do desempenho em áreas de alta densidade</li>
+                                    <li>Melhor gerenciamento de recursos através do CPE</li>
+                                </ul>
+                            </div>
+                            <div class="project-tech">
+                                <span>Ruijie Cloud</span>
+                                <span>Wi-Fi 6</span>
+                                <span>Network Monitoring</span>
+                                <span>Troubleshooting</span>
+                                <span>CPE Management</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Projetos Section -->
+        <section id="projetos" class="projects">
+            <div class="container">
+                <h2 class="section-title reveal">Projetos</h2>
+                <div class="filter-buttons reveal">
+                    <button class="filter-btn active" data-filter="all">
+                        <i class="fas fa-globe"></i>
+                        <span>Todos</span>
+                    </button>
+                    <button class="filter-btn" data-filter="web">
+                        <i class="fas fa-code"></i>
+                        <span>Web</span>
+                    </button>
+                    <button class="filter-btn" data-filter="python">
+                        <i class="fab fa-python"></i>
+                        <span>Python</span>
+                    </button>
+                    <button class="filter-btn" data-filter="java">
+                        <i class="fab fa-java"></i>
+                        <span>Java</span>
+                    </button>
+                </div>
+                <div class="projects-grid">
+                    <article class="project-item card reveal" data-category="web">
+                        <div class="project-content">
+                            <h3>Previsão do Tempo</h3>
+                            <p>Aplicação web para consulta de previsão do tempo em tempo real utilizando a API OpenWeather. Interface moderna e responsiva com atualizações em tempo real.</p>
+                            <div class="project-tech" role="list">
+                                <span role="listitem">HTML</span>
+                                <span role="listitem">CSS</span>
+                                <span role="listitem">JavaScript</span>
+                                <span role="listitem">API REST</span>
+                            </div>
+                            <div class="project-links">
+                                <a href="https://github.com/JVbarreto/Previsao-do-tempo" 
+                                   target="_blank" 
+                                   class="btn btn-secondary"
+                                   rel="noopener noreferrer">
+                                    <i class="fab fa-github"></i> Código
+                                </a>
+                            </div>
+                        </div>
+                    </article>
+
+                    <article class="project-item card reveal" data-category="web">
+                        <div class="project-content">
+                            <h3>Buscador de Endereço</h3>
+                            <p>Sistema de busca de endereços que utiliza API de CEP para localização automática. Interface intuitiva e validação em tempo real.</p>
+                            <div class="project-tech" role="list">
+                                <span role="listitem">HTML</span>
+                                <span role="listitem">JavaScript</span>
+                                <span role="listitem">API CEP</span>
+                            </div>
+                            <div class="project-links">
+                                <a href="https://github.com/JVbarreto/Buscador-de-endereco" 
+                                   target="_blank" 
+                                   class="btn btn-secondary"
+                                   rel="noopener noreferrer">
+                                    <i class="fab fa-github"></i> Código
+                                </a>
+                            </div>
+                        </div>
+                    </article>
+
+                    <article class="project-item card reveal" data-category="web">
+                        <div class="project-content">
+                            <h3>Portal de Ecoturismo</h3>
+                            <p>Site completo de ecoturismo com integração Google Maps, formulários de contato, galeria de imagens e design responsivo. Inclui otimizações SEO e animações.</p>
+                            <div class="project-tech" role="list">
+                                <span role="listitem">HTML</span>
+                                <span role="listitem">CSS</span>
+                                <span role="listitem">JavaScript</span>
+                                <span role="listitem">Google Maps API</span>
+                            </div>
+                            <div class="project-links">
+                                <a href="https://github.com/JVbarreto/projeto-Ecoturismo" 
+                                   target="_blank" 
+                                   class="btn btn-secondary"
+                                   rel="noopener noreferrer">
+                                    <i class="fab fa-github"></i> Código
+                                </a>
+                            </div>
+                        </div>
+                    </article>
+
+                    <article class="project-item card reveal" data-category="web">
+                        <div class="project-content">
+                            <h3>Sistema de Consultoria</h3>
+                            <p>Aplicação web moderna desenvolvida com TypeScript para gestão de consultoria. Interface responsiva e sistema de autenticação seguro.</p>
+                            <div class="project-tech" role="list">
+                                <span role="listitem">TypeScript</span>
+                                <span role="listitem">CSS</span>
+                                <span role="listitem">JavaScript</span>
+                            </div>
+                            <div class="project-links">
+                                <a href="https://github.com/JVbarreto/consultoriaDJ" 
+                                   target="_blank" 
+                                   class="btn btn-secondary"
+                                   rel="noopener noreferrer">
+                                    <i class="fab fa-github"></i> Código
+                                </a>
+                            </div>
+                        </div>
+                    </article>
+
+                    <article class="project-item card reveal" data-category="web">
+                        <div class="project-content">
+                            <h3>Sistema de Restaurante</h3>
+                            <p>Sistema web para gestão de restaurante com funcionalidades de cardápio digital, pedidos online e gestão de mesas.</p>
+                            <div class="project-tech" role="list">
+                                <span role="listitem">HTML</span>
+                                <span role="listitem">CSS</span>
+                                <span role="listitem">JavaScript</span>
+                                <span role="listitem">Node.js</span>
+                            </div>
+                            <div class="project-links">
+                                <a href="https://github.com/JVbarreto/A3-Restaurante" 
+                                   target="_blank" 
+                                   class="btn btn-secondary"
+                                   rel="noopener noreferrer">
+                                    <i class="fab fa-github"></i> Código
+                                </a>
+                            </div>
+                        </div>
+                    </article>
+
+                    <article class="project-item card reveal" data-category="web">
+                        <div class="project-content">
+                            <h3>Projeto A3</h3>
+                            <p>Projeto acadêmico desenvolvido com foco em práticas modernas de desenvolvimento web e padrões de projeto.</p>
+                            <div class="project-tech" role="list">
+                                <span role="listitem">HTML</span>
+                                <span role="listitem">CSS</span>
+                                <span role="listitem">JavaScript</span>
+                            </div>
+                            <div class="project-links">
+                                <a href="https://github.com/JVbarreto/ProjetoA3" 
+                                   target="_blank" 
+                                   class="btn btn-secondary"
+                                   rel="noopener noreferrer">
+                                    <i class="fab fa-github"></i> Código
+                                </a>
+                            </div>
+                        </div>
+                    </article>
+                </div>
+            </div>
+        </section>
+
         <!-- Competências Section -->
         <section id="competencias" class="skills">
             <div class="container">
-                <h2 class="section-title">Competências Técnicas</h2>
+                <h2 class="section-title reveal">Competências Técnicas</h2>
                 <div class="skills-grid">
                     <div class="skill-category">
                         <h3>Desenvolvimento Web</h3>
@@ -243,7 +560,7 @@
         <!-- Certificações Section -->
         <section id="certificacoes" class="certifications">
             <div class="container">
-                <h2 class="section-title">Certificações</h2>
+                <h2 class="section-title reveal">Certificações</h2>
                 <div class="cert-grid">
                     <div class="cert-item">
                         <i class="fab fa-js-square"></i>
@@ -273,20 +590,20 @@
         <!-- Contato Section -->
         <section id="contato" class="contact">
             <div class="container">
-                <h2 class="section-title">Contato</h2>
-                <div class="contact-content">
+                <h2 class="section-title reveal">Contato</h2>
+                <div class="contact-content reveal">
                     <div class="contact-info">
-                        <div class="info-item">
+                        <div class="info-item card">
                             <i class="fas fa-envelope"></i>
                             <h3>Email</h3>
                             <p><a href="mailto:vitorbarreto1432@gmail.com">vitorbarreto1432@gmail.com</a></p>
                         </div>
-                        <div class="info-item">
+                        <div class="info-item card">
                             <i class="fas fa-phone"></i>
                             <h3>Telefone</h3>
                             <p><a href="tel:+5575983132665">(75) 98313-2665</a></p>
                         </div>
-                        <div class="info-item">
+                        <div class="info-item card">
                             <i class="fab fa-linkedin"></i>
                             <h3>LinkedIn</h3>
                             <p><a href="https://www.linkedin.com/in/vitor-barretodev" target="_blank">vitor-barretodev</a></p>
@@ -294,18 +611,20 @@
                     </div>
                     <form id="contact-form" class="contact-form">
                         <div class="form-group">
+                            <input type="text" id="name" name="name" placeholder=" " required>
                             <label for="name">Nome</label>
-                            <input type="text" id="name" name="name" required>
                         </div>
                         <div class="form-group">
+                            <input type="email" id="email" name="email" placeholder=" " required>
                             <label for="email">Email</label>
-                            <input type="email" id="email" name="email" required>
                         </div>
-                        <div class="form-group">
+                        <div class="form-group message-group">
+                            <textarea id="message" name="message" placeholder=" " required></textarea>
                             <label for="message">Mensagem</label>
-                            <textarea id="message" name="message" required></textarea>
                         </div>
-                        <button type="submit" class="btn btn-primary">Enviar Mensagem</button>
+                        <button type="submit" class="btn">
+                            <span>Enviar Mensagem</span>
+                        </button>
                     </form>
                 </div>
             </div>
@@ -318,11 +637,24 @@
             <div class="footer-content">
                 <p>&copy; 2024 João Vitor Barreto Rios. Todos os direitos reservados.</p>
                 <div class="social-links">
-                    <a href="https://github.com/JVbarreto" target="_blank" aria-label="GitHub">
-                        <i class="fab fa-github"></i>
+                    <a href="https://github.com/JVbarreto" 
+                       target="_blank" 
+                       class="social-link github" 
+                       aria-label="GitHub"
+                       rel="noopener noreferrer">
+                        <i class="fab fa-github" aria-hidden="true"></i>
                     </a>
-                    <a href="https://www.linkedin.com/in/vitor-barretodev" target="_blank" aria-label="LinkedIn">
-                        <i class="fab fa-linkedin"></i>
+                    <a href="https://www.linkedin.com/in/vitor-barretodev" 
+                       target="_blank" 
+                       class="social-link linkedin" 
+                       aria-label="LinkedIn"
+                       rel="noopener noreferrer">
+                        <i class="fab fa-linkedin" aria-hidden="true"></i>
+                    </a>
+                    <a href="mailto:vitorbarreto1432@gmail.com" 
+                       class="social-link email" 
+                       aria-label="Email">
+                        <i class="fas fa-envelope" aria-hidden="true"></i>
                     </a>
                 </div>
             </div>
@@ -335,6 +667,9 @@
     </button>
 
     <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12"></script>
+    <script src="js/particles.js"></script>
     <script src="js/script.js"></script>
 </body>
 </html>
