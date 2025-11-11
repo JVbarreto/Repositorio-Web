@@ -69,22 +69,27 @@ if (savedTheme) {
 }
 
 // Back to Top Button with Smooth Scroll and Accessibility
-function toggleBackToTop() {
-    const isVisible = window.scrollY > 300;
-    backToTopBtn.classList.toggle('visible', isVisible);
-    backToTopBtn.setAttribute('aria-hidden', !isVisible);
-}
+if (backToTopBtn) {
+    function toggleBackToTop() {
+        const isVisible = window.scrollY > 300;
+        backToTopBtn.classList.toggle('visible', isVisible);
+        backToTopBtn.setAttribute('aria-hidden', !isVisible);
+    }
 
-window.addEventListener('scroll', toggleBackToTop);
+    window.addEventListener('scroll', toggleBackToTop);
 
-backToTopBtn.addEventListener('click', () => {
-    window.scrollTo({
-        top: 0,
-        behavior: 'smooth'
+    backToTopBtn.addEventListener('click', () => {
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+        });
+        // Focus on first focusable element
+        const firstFocusable = document.querySelector('a, button, input, [tabindex="0"]');
+        if (firstFocusable) {
+            firstFocusable.focus();
+        }
     });
-    // Focus on first focusable element
-    document.querySelector('a, button, input, [tabindex="0"]').focus();
-});
+}
 
 // Enhanced Smooth Scroll for Navigation
 document.querySelectorAll('a[href^="#"]').forEach(anchor => {
@@ -143,42 +148,396 @@ if (typeof Typed !== 'undefined') {
     });
 }
 
+// GitHub Projects Configuration
+const GITHUB_USERNAME = 'JVbarreto';
+const EXCLUDED_REPOS = ['Repositorio-Web', 'Presentinho-Sussu']; // Excluir o próprio portfólio e presentinho
+// Token de autenticação (necessário para evitar rate limit)
+// Geve um token em: https://github.com/settings/tokens
+const GITHUB_TOKEN = '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';
+// Repositórios que sempre devem aparecer (mesmo se forem privados ou forks)
+const FORCE_SHOW_REPOS = ['wa-team-talk']; // Remova 'library' pois não foi encontrado
+
+// Mapeamento de linguagens para categorias
+const languageCategoryMap = {
+    'HTML': 'web',
+    'CSS': 'web',
+    'JavaScript': 'web',
+    'TypeScript': 'web',
+    'Python': 'python',
+    'Java': 'java'
+};
+
+// Função para determinar a categoria do projeto
+function getProjectCategory(languages, topics) {
+    // Verificar se há tópicos que indiquem categoria
+    if (topics && topics.length > 0) {
+        const topicLower = topics.join(' ').toLowerCase();
+        if (topicLower.includes('python')) return 'python';
+        if (topicLower.includes('java')) return 'java';
+        if (topicLower.includes('web') || topicLower.includes('frontend') || topicLower.includes('html')) return 'web';
+    }
+    
+    // Verificar linguagem principal
+    if (languages && Object.keys(languages).length > 0) {
+        const mainLanguage = Object.keys(languages)[0];
+        return languageCategoryMap[mainLanguage] || 'web';
+    }
+    
+    return 'web';
+}
+
+// Função para obter tecnologias do projeto
+function getProjectTechnologies(languages, topics) {
+    const techs = new Set();
+    
+    if (languages) {
+        Object.keys(languages).forEach(lang => {
+            if (lang === 'HTML') techs.add('HTML');
+            else if (lang === 'CSS') techs.add('CSS');
+            else if (lang === 'JavaScript') techs.add('JavaScript');
+            else if (lang === 'TypeScript') techs.add('TypeScript');
+            else if (lang === 'Python') techs.add('Python');
+            else if (lang === 'Java') techs.add('Java');
+            else if (lang === 'Shell') techs.add('Shell');
+        });
+    }
+    
+    // Adicionar tecnologias comuns baseadas em tópicos
+    if (topics) {
+        topics.forEach(topic => {
+            const topicLower = topic.toLowerCase();
+            if (topicLower.includes('api')) techs.add('API REST');
+            if (topicLower.includes('react')) techs.add('React');
+            if (topicLower.includes('node')) techs.add('Node.js');
+            if (topicLower.includes('sql')) techs.add('SQL');
+            if (topicLower.includes('mongodb')) techs.add('MongoDB');
+            if (topicLower.includes('google-maps')) techs.add('Google Maps API');
+        });
+    }
+    
+    return Array.from(techs);
+}
+
+// Função para obter linguagem principal do repositório
+function getMainLanguage(languages) {
+    if (!languages || Object.keys(languages).length === 0) {
+        return null;
+    }
+    
+    // Ordenar linguagens por quantidade de código
+    const sortedLanguages = Object.entries(languages)
+        .sort((a, b) => b[1] - a[1]);
+    
+    return sortedLanguages[0][0]; // Retornar a linguagem principal
+}
+
+// Função para criar card de projeto
+function createProjectCard(repo) {
+    // Usar language do repo ou buscar da propriedade languages
+    const repoLanguage = repo.language || getMainLanguage(repo.languages);
+    const languagesObj = repo.languages || (repoLanguage ? { [repoLanguage]: 1 } : {});
+    
+    const category = getProjectCategory(languagesObj, repo.topics || []);
+    const technologies = getProjectTechnologies(languagesObj, repo.topics || []);
+    
+    // Criar descrição se não houver
+    const description = repo.description || 'Projeto desenvolvido com tecnologias modernas.';
+    
+    // Formatar nome do projeto
+    const projectName = repo.name
+        .replace(/-/g, ' ')
+        .replace(/\b\w/g, l => l.toUpperCase());
+    
+    const projectCard = document.createElement('article');
+    projectCard.className = 'project-item card reveal';
+    projectCard.dataset.category = category;
+    
+    // Tecnologias HTML - adicionar linguagem principal se não estiver na lista
+    if (repoLanguage && !technologies.includes(repoLanguage)) {
+        technologies.unshift(repoLanguage);
+    }
+    
+    const techHTML = technologies.length > 0 
+        ? technologies.slice(0, 5).map(tech => `<span role="listitem">${tech}</span>`).join('')
+        : '<span role="listitem">Projeto</span>';
+    
+    // Link para demo se houver homepage
+    const demoLink = repo.homepage 
+        ? `<a href="${repo.homepage}" 
+                   target="_blank" 
+                   class="btn btn-primary"
+                   rel="noopener noreferrer">
+                    <i class="fas fa-external-link-alt"></i> Demo
+                </a>`
+        : '';
+    
+    projectCard.innerHTML = `
+        <div class="project-content">
+            <h3>${projectName}</h3>
+            <p>${description}</p>
+            <div class="project-tech" role="list">
+                ${techHTML}
+            </div>
+            <div class="project-links">
+                <a href="${repo.html_url}" 
+                   target="_blank" 
+                   class="btn btn-secondary"
+                   rel="noopener noreferrer">
+                    <i class="fab fa-github"></i> Código
+                </a>
+                ${demoLink}
+            </div>
+        </div>
+    `;
+    
+    return projectCard;
+}
+
+// Função para buscar repositórios do GitHub
+async function fetchGitHubProjects() {
+    const projectsGrid = document.querySelector('.projects-grid');
+    if (!projectsGrid) return;
+    
+    try {
+        // Mostrar loading
+        projectsGrid.innerHTML = '<div class="loading-projects"><i class="fas fa-spinner fa-spin"></i><p>Carregando projetos do GitHub...</p></div>';
+        
+        console.log("🔄 Iniciando carregamento de projetos para:", GITHUB_USERNAME);
+        
+        // Buscar repositórios públicos
+        const url = `https://api.github.com/users/${GITHUB_USERNAME}/repos?sort=updated&per_page=100&type=all`;
+        console.log("📍 URL da API:", url);
+        
+        const headers = {
+            'Accept': 'application/vnd.github.v3+json'
+        };
+        
+        // Adicionar token se disponível
+        if (GITHUB_TOKEN) {
+            headers['Authorization'] = `token ${GITHUB_TOKEN}`;
+            console.log("🔑 Token de autenticação adicionado");
+        }
+        
+        const response = await fetch(url, { headers });
+        console.log("📊 Status da resposta:", response.status);
+        
+        if (!response.ok) {
+            if (response.status === 403) {
+                console.error('❌ Rate limit da API do GitHub excedido. Tente novamente mais tarde.');
+                throw new Error('Rate limit da API do GitHub excedido. Tente novamente mais tarde.');
+            }
+            throw new Error(`Erro ao buscar repositórios: ${response.status}`);
+        }
+        
+        const repos = await response.json();
+        console.log("✅ Repositórios obtidos da API:", repos.length);
+        console.log("📋 Detalhes dos repositórios:", repos);
+        
+        // Listar TODOS os repositórios com seus nomes exatos
+        console.log("📚 LISTA COMPLETA DE REPOSITÓRIOS:");
+        repos.forEach((repo, index) => {
+            console.log(`  ${index + 1}. ${repo.name} (Private: ${repo.private}, Fork: ${repo.fork})`);
+        });
+        
+        // Filtrar repositórios excluídos, apenas públicos e não forks
+        const filteredRepos = repos.filter(repo => {
+            // Se está na lista de força, sempre mostrar
+            if (FORCE_SHOW_REPOS.includes(repo.name)) {
+                console.log(`✅ ${repo.name}: Forçado a aparecer`);
+                return true;
+            }
+            
+            const isNotFork = !repo.fork;
+            const isNotExcluded = !EXCLUDED_REPOS.includes(repo.name);
+            const isPublic = !repo.private;
+            
+            console.log(`📦 ${repo.name}: Fork=${repo.fork}, Excluded=${EXCLUDED_REPOS.includes(repo.name)}, Private=${repo.private}`);
+            
+            return isNotFork && isNotExcluded && isPublic;
+        }).sort((a, b) => new Date(b.updated_at) - new Date(a.updated_at));
+        
+        console.log(`🎯 Repositórios após filtros: ${filteredRepos.length}`);
+        console.log("📂 Repos filtrados:", filteredRepos);
+        
+        // Mostrar quais foram excluídos
+        const excludedRepos = repos.filter(repo => 
+            !FORCE_SHOW_REPOS.includes(repo.name) && (
+                repo.fork || 
+                EXCLUDED_REPOS.includes(repo.name) ||
+                repo.private
+            )
+        );
+        if (excludedRepos.length > 0) {
+            console.log(`⛔ Repositórios excluídos (${excludedRepos.length}):`);
+            excludedRepos.forEach(r => {
+                const reason = [];
+                if (r.fork) reason.push("Fork");
+                if (r.private) reason.push("Privado");
+                if (EXCLUDED_REPOS.includes(r.name)) reason.push("Na lista de exclusão");
+                console.log(`   - ${r.name}: ${reason.join(", ")}`);
+            });
+        }
+        
+        // Buscar informações detalhadas de linguagens para cada repositório
+        // Limitar a 10 requisições simultâneas para evitar rate limiting
+        const reposWithLanguages = [];
+        const batchSize = 10;
+        
+        for (let i = 0; i < filteredRepos.length; i += batchSize) {
+            const batch = filteredRepos.slice(i, i + batchSize);
+            const batchResults = await Promise.all(
+                batch.map(async (repo) => {
+                    try {
+                        const langHeaders = {
+                            'Accept': 'application/vnd.github.v3+json'
+                        };
+                        if (GITHUB_TOKEN) {
+                            langHeaders['Authorization'] = `token ${GITHUB_TOKEN}`;
+                        }
+                        
+                        const langResponse = await fetch(repo.languages_url, { headers: langHeaders });
+                        if (langResponse.ok) {
+                            const languages = await langResponse.json();
+                            return { ...repo, languages };
+                        } else if (langResponse.status === 403) {
+                            console.warn(`Rate limit ao buscar linguagens para ${repo.name}`);
+                            return repo;
+                        }
+                    } catch (error) {
+                        console.error(`Erro ao buscar linguagens para ${repo.name}:`, error);
+                    }
+                    return repo;
+                })
+            );
+            reposWithLanguages.push(...batchResults);
+            
+            // Pequeno delay entre batches para evitar rate limiting
+            if (i + batchSize < filteredRepos.length) {
+                await new Promise(resolve => setTimeout(resolve, 100));
+            }
+        }
+        
+        // Limpar grid
+        projectsGrid.innerHTML = '';
+        
+        // Se não houver projetos, mostrar mensagem
+        if (reposWithLanguages.length === 0) {
+            console.warn('⚠️ Nenhum projeto encontrado após o carregamento.');
+            projectsGrid.innerHTML = '<div class="error-message"><p>Nenhum projeto encontrado.</p></div>';
+            return;
+        }
+        
+        console.log(`🎨 Criando ${reposWithLanguages.length} cards de projeto`);
+        
+        // Criar cards para cada repositório
+        reposWithLanguages.forEach((repo, index) => {
+            try {
+                const projectCard = createProjectCard(repo);
+                projectCard.classList.add('show'); // Adicionar classe ANTES de inserir no DOM
+                projectCard.style.display = 'block'; // Garantir que não está escondido
+                projectCard.style.opacity = '1'; // Garantir opacidade
+                projectCard.style.pointerEvents = 'auto'; // Garantir que é clicável
+                projectsGrid.appendChild(projectCard);
+                console.log(`✨ Card ${index + 1} criado e inserido:`, repo.name, projectCard);
+            } catch (error) {
+                console.error(`❌ Erro ao criar card para ${repo.name}:`, error);
+            }
+        });
+        
+        // Re-aplicar observer para animações
+        document.querySelectorAll('.projects-grid .reveal').forEach(element => {
+            revealObserver.observe(element);
+        });
+        
+        console.log("🔍 Aplicando filtro padrão 'all'");
+        // Aplicar filtro padrão "all"
+        filterProjects('all');
+        
+    } catch (error) {
+        console.error("❌ Erro ao carregar projetos:", error);
+        console.error("Stack:", error.stack);
+        projectsGrid.innerHTML = `
+            <div class="error-message">
+                <p><i class="fas fa-exclamation-triangle"></i> Erro ao carregar projetos do GitHub.</p>
+                <p>Verifique sua conexão ou tente novamente mais tarde.</p>
+                <p style="font-size: 0.9rem; margin-top: 0.5rem;">${error.message}</p>
+            </div>
+        `;
+    }
+}
+
 // Enhanced Project Filter with Animation and Accessibility
-const filterButtons = document.querySelectorAll('.filter-btn');
-const projectItems = document.querySelectorAll('.project-item');
+let filterInitialized = false;
 
 function filterProjects(filter) {
+    const projectItems = document.querySelectorAll('.project-item');
+    console.log(`🎬 filterProjects chamado com filtro: ${filter}`);
+    console.log(`📊 Total de project-items encontrados: ${projectItems.length}`);
+    
     const message = `Mostrando projetos ${filter === 'all' ? 'todos' : 'da categoria ' + filter}`;
     announceToScreenReader(message);
     
-    projectItems.forEach(item => {
+    projectItems.forEach((item, index) => {
         const matches = filter === 'all' || item.dataset.category === filter;
         item.style.display = matches ? 'block' : 'none';
         item.setAttribute('aria-hidden', !matches);
         
         if (matches) {
-            setTimeout(() => item.classList.add('show'), 10);
+            setTimeout(() => {
+                item.classList.add('show');
+                console.log(`✅ Show adicionado ao item ${index}: ${item.dataset.category}`);
+            }, 10);
         } else {
             item.classList.remove('show');
+            console.log(`❌ Show removido do item ${index}`);
         }
     });
 }
 
-filterButtons.forEach(button => {
-    button.addEventListener('click', () => {
-        const filter = button.dataset.filter;
-        
-        // Update active button state
-        filterButtons.forEach(btn => {
-            btn.classList.remove('active');
-            btn.setAttribute('aria-pressed', 'false');
+function initializeProjectFilters() {
+    // Só inicializar uma vez
+    if (filterInitialized) {
+        return;
+    }
+    
+    const filterButtons = document.querySelectorAll('.filter-btn');
+    
+    filterButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            const filter = button.dataset.filter;
+            
+            // Update active button state
+            filterButtons.forEach(btn => {
+                btn.classList.remove('active');
+                btn.setAttribute('aria-pressed', 'false');
+            });
+            button.classList.add('active');
+            button.setAttribute('aria-pressed', 'true');
+            
+            filterProjects(filter);
         });
-        button.classList.add('active');
-        button.setAttribute('aria-pressed', 'true');
-        
-        filterProjects(filter);
     });
+    
+    filterInitialized = true;
+}
+
+// Carregar projetos quando a página carregar
+document.addEventListener('DOMContentLoaded', () => {
+    console.log("🚀 DOMContentLoaded disparado");
+    console.log("👁️ revealObserver disponível?", typeof revealObserver !== 'undefined');
+    
+    // Inicializar filtros primeiro
+    initializeProjectFilters();
+    
+    // Aguardar um pouco para garantir que o DOM está pronto
+    setTimeout(() => {
+        console.log("⏰ Executando fetchGitHubProjects após delay");
+        fetchGitHubProjects();
+    }, 500);
 });
+
+// Controle do Carrossel
+// Funções removidas - scroll agora é apenas com toque/mouse drag
 
 // Enhanced Form Validation with Accessibility
 const formInputs = document.querySelectorAll('.form-group input, .form-group textarea');
@@ -346,4 +705,7 @@ window.addEventListener('scroll', () => {
     }
     
     lastScroll = currentScroll;
-}); 
+}); }); 
+
+
+
