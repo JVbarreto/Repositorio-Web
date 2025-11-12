@@ -157,7 +157,15 @@ const EXCLUDED_REPOS = ['Repositorio-Web', 'Presentinho-Sussu']; // Excluir o pr
 // NOTA: NUNCA commite tokens no código! Use variáveis de ambiente ou um backend proxy.
 const GITHUB_TOKEN = undefined; // Token removido por segurança - a API funciona sem token para repositórios públicos
 // Repositórios que sempre devem aparecer (mesmo se forem privados ou forks)
-const FORCE_SHOW_REPOS = ['wa-team-talk'];
+const FORCE_SHOW_REPOS = [
+    'wa-team-talk',
+    'Previsao-do-tempo',
+    'Buscador-de-endereco',
+    'projeto-Ecoturismo',
+    'consultoriaDJ',
+    'A3-Restaurante',
+    'ProjetoA3'
+];
 
 // Mapeamento de linguagens para categorias
 const languageCategoryMap = {
@@ -567,9 +575,100 @@ function initProjectsCarousel() {
     }, { passive: false });
 }
 
-// Inicializar carrossel quando o DOM estiver pronto
+// Controle do Carrossel de Certificações - Navegação por Arrastar
+function initCertificationsCarousel() {
+    const certGrid = document.querySelector('.cert-grid');
+    if (!certGrid) return;
+    
+    let isDown = false;
+    let startX;
+    let scrollLeft;
+    let isDragging = false;
+    
+    // Mouse events
+    certGrid.addEventListener('mousedown', (e) => {
+        // Não iniciar drag se clicou em um link ou botão
+        if (e.target.closest('a, button')) {
+            return;
+        }
+        isDown = true;
+        certGrid.style.cursor = 'grabbing';
+        startX = e.pageX - certGrid.offsetLeft;
+        scrollLeft = certGrid.scrollLeft;
+        isDragging = false;
+    });
+    
+    certGrid.addEventListener('mouseleave', () => {
+        isDown = false;
+        certGrid.style.cursor = 'grab';
+    });
+    
+    certGrid.addEventListener('mouseup', () => {
+        isDown = false;
+        certGrid.style.cursor = 'grab';
+        certGrid.style.pointerEvents = 'auto';
+        // Reset após um pequeno delay para permitir cliques
+        setTimeout(() => {
+            isDragging = false;
+        }, 100);
+    });
+    
+    certGrid.addEventListener('mousemove', (e) => {
+        if (!isDown) return;
+        e.preventDefault();
+        const x = e.pageX - certGrid.offsetLeft;
+        const walk = (x - startX) * 1.5; // Velocidade do scroll
+        
+        // Só marca como dragging se moveu significativamente
+        if (Math.abs(walk) > 5) {
+            isDragging = true;
+            certGrid.style.pointerEvents = 'none';
+        }
+        
+        certGrid.scrollLeft = scrollLeft - walk;
+    });
+    
+    // Touch events para mobile
+    let touchStartX = 0;
+    let touchScrollLeft = 0;
+    
+    certGrid.addEventListener('touchstart', (e) => {
+        touchStartX = e.touches[0].pageX - certGrid.offsetLeft;
+        touchScrollLeft = certGrid.scrollLeft;
+        isDragging = false;
+    }, { passive: true });
+    
+    certGrid.addEventListener('touchmove', (e) => {
+        if (!touchStartX) return;
+        const x = e.touches[0].pageX - certGrid.offsetLeft;
+        const walk = (x - touchStartX) * 1.2;
+        certGrid.scrollLeft = touchScrollLeft - walk;
+        isDragging = true;
+    }, { passive: true });
+    
+    certGrid.addEventListener('touchend', () => {
+        touchStartX = 0;
+    });
+    
+    // Smooth scroll snap
+    certGrid.addEventListener('scroll', () => {
+        // Adiciona suavidade ao scroll
+        certGrid.style.scrollBehavior = 'smooth';
+    });
+    
+    // Previne scroll vertical acidental
+    certGrid.addEventListener('wheel', (e) => {
+        if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
+            e.preventDefault();
+            certGrid.scrollLeft += e.deltaY;
+        }
+    }, { passive: false });
+}
+
+// Inicializar carrosséis quando o DOM estiver pronto
 document.addEventListener('DOMContentLoaded', () => {
     initProjectsCarousel();
+    initCertificationsCarousel();
 });
 
 // Enhanced Form Validation with Accessibility
