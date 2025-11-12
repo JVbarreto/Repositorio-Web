@@ -147,6 +147,18 @@ if (typeof Typed !== 'undefined') {
         attr: 'aria-label'
     });
 }
+
+// GitHub Projects Configuration
+const GITHUB_USERNAME = 'JVbarreto';
+const EXCLUDED_REPOS = ['Repositorio-Web', 'Presentinho-Sussu']; // Excluir o próprio portfólio e presentinho
+// Token de autenticação (opcional - necessário apenas para evitar rate limit)
+// Para usar um token, defina via variável de ambiente ou configure via servidor
+// Gere um token em: https://github.com/settings/tokens
+// NOTA: NUNCA commite tokens no código! Use variáveis de ambiente ou um backend proxy.
+const GITHUB_TOKEN = undefined; // Token removido por segurança - a API funciona sem token para repositórios públicos
+// Repositórios que sempre devem aparecer (mesmo se forem privados ou forks)
+const FORCE_SHOW_REPOS = ['wa-team-talk'];
+
 // Mapeamento de linguagens para categorias
 const languageCategoryMap = {
     'HTML': 'web',
@@ -439,10 +451,6 @@ async function fetchGitHubProjects() {
             revealObserver.observe(element);
         });
         
-        console.log("🔍 Aplicando filtro padrão 'all'");
-        // Aplicar filtro padrão "all"
-        filterProjects('all');
-        
     } catch (error) {
         console.error("❌ Erro ao carregar projetos:", error);
         console.error("Stack:", error.stack);
@@ -456,78 +464,113 @@ async function fetchGitHubProjects() {
     }
 }
 
-// Enhanced Project Filter with Animation and Accessibility
-let filterInitialized = false;
-
-function filterProjects(filter) {
-    const projectItems = document.querySelectorAll('.project-item');
-    console.log(`🎬 filterProjects chamado com filtro: ${filter}`);
-    console.log(`📊 Total de project-items encontrados: ${projectItems.length}`);
-    
-    const message = `Mostrando projetos ${filter === 'all' ? 'todos' : 'da categoria ' + filter}`;
-    announceToScreenReader(message);
-    
-    projectItems.forEach((item, index) => {
-        const matches = filter === 'all' || item.dataset.category === filter;
-        item.style.display = matches ? 'block' : 'none';
-        item.setAttribute('aria-hidden', !matches);
-        
-        if (matches) {
-            setTimeout(() => {
-                item.classList.add('show');
-                console.log(`✅ Show adicionado ao item ${index}: ${item.dataset.category}`);
-            }, 10);
-        } else {
-            item.classList.remove('show');
-            console.log(`❌ Show removido do item ${index}`);
-        }
-    });
-}
-
-function initializeProjectFilters() {
-    // Só inicializar uma vez
-    if (filterInitialized) {
-        return;
-    }
-    
-    const filterButtons = document.querySelectorAll('.filter-btn');
-    
-    filterButtons.forEach(button => {
-        button.addEventListener('click', () => {
-            const filter = button.dataset.filter;
-            
-            // Update active button state
-            filterButtons.forEach(btn => {
-                btn.classList.remove('active');
-                btn.setAttribute('aria-pressed', 'false');
-            });
-            button.classList.add('active');
-            button.setAttribute('aria-pressed', 'true');
-            
-            filterProjects(filter);
-        });
-    });
-    
-    filterInitialized = true;
-}
-
 // Carregar projetos quando a página carregar
 document.addEventListener('DOMContentLoaded', () => {
     console.log("🚀 DOMContentLoaded disparado");
     console.log("👁️ revealObserver disponível?", typeof revealObserver !== 'undefined');
     
-    // Inicializar filtros primeiro
-    initializeProjectFilters();
-    
-    // Aguardar um pouco para garantir que o DOM está pronto
-    setTimeout(() => {
-        console.log("⏰ Executando fetchGitHubProjects após delay");
-        fetchGitHubProjects();
-    }, 500);
+    // GitHub API loading disabled - using static projects from HTML instead
+    // Uncomment below to enable dynamic GitHub project loading:
+    // setTimeout(() => {
+    //     console.log("⏰ Executando fetchGitHubProjects após delay");
+    //     fetchGitHubProjects();
+    // }, 500);
 });
 
-// Controle do Carrossel
-// Funções removidas - scroll agora é apenas com toque/mouse drag
+// Controle do Carrossel - Navegação por Arrastar
+function initProjectsCarousel() {
+    const projectsGrid = document.querySelector('.projects-grid');
+    if (!projectsGrid) return;
+    
+    let isDown = false;
+    let startX;
+    let scrollLeft;
+    let isDragging = false;
+    
+    // Mouse events
+    projectsGrid.addEventListener('mousedown', (e) => {
+        // Não iniciar drag se clicou em um link ou botão
+        if (e.target.closest('a, button')) {
+            return;
+        }
+        isDown = true;
+        projectsGrid.style.cursor = 'grabbing';
+        startX = e.pageX - projectsGrid.offsetLeft;
+        scrollLeft = projectsGrid.scrollLeft;
+        isDragging = false;
+    });
+    
+    projectsGrid.addEventListener('mouseleave', () => {
+        isDown = false;
+        projectsGrid.style.cursor = 'grab';
+    });
+    
+    projectsGrid.addEventListener('mouseup', () => {
+        isDown = false;
+        projectsGrid.style.cursor = 'grab';
+        projectsGrid.style.pointerEvents = 'auto';
+        // Reset após um pequeno delay para permitir cliques
+        setTimeout(() => {
+            isDragging = false;
+        }, 100);
+    });
+    
+    projectsGrid.addEventListener('mousemove', (e) => {
+        if (!isDown) return;
+        e.preventDefault();
+        const x = e.pageX - projectsGrid.offsetLeft;
+        const walk = (x - startX) * 1.5; // Velocidade do scroll
+        
+        // Só marca como dragging se moveu significativamente
+        if (Math.abs(walk) > 5) {
+            isDragging = true;
+            projectsGrid.style.pointerEvents = 'none';
+        }
+        
+        projectsGrid.scrollLeft = scrollLeft - walk;
+    });
+    
+    // Touch events para mobile
+    let touchStartX = 0;
+    let touchScrollLeft = 0;
+    
+    projectsGrid.addEventListener('touchstart', (e) => {
+        touchStartX = e.touches[0].pageX - projectsGrid.offsetLeft;
+        touchScrollLeft = projectsGrid.scrollLeft;
+        isDragging = false;
+    }, { passive: true });
+    
+    projectsGrid.addEventListener('touchmove', (e) => {
+        if (!touchStartX) return;
+        const x = e.touches[0].pageX - projectsGrid.offsetLeft;
+        const walk = (x - touchStartX) * 1.2;
+        projectsGrid.scrollLeft = touchScrollLeft - walk;
+        isDragging = true;
+    }, { passive: true });
+    
+    projectsGrid.addEventListener('touchend', () => {
+        touchStartX = 0;
+    });
+    
+    // Smooth scroll snap
+    projectsGrid.addEventListener('scroll', () => {
+        // Adiciona suavidade ao scroll
+        projectsGrid.style.scrollBehavior = 'smooth';
+    });
+    
+    // Previne scroll vertical acidental
+    projectsGrid.addEventListener('wheel', (e) => {
+        if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
+            e.preventDefault();
+            projectsGrid.scrollLeft += e.deltaY;
+        }
+    }, { passive: false });
+}
+
+// Inicializar carrossel quando o DOM estiver pronto
+document.addEventListener('DOMContentLoaded', () => {
+    initProjectsCarousel();
+});
 
 // Enhanced Form Validation with Accessibility
 const formInputs = document.querySelectorAll('.form-group input, .form-group textarea');
@@ -695,7 +738,4 @@ window.addEventListener('scroll', () => {
     }
     
     lastScroll = currentScroll;
-});; 
-
-
-
+});
