@@ -147,16 +147,6 @@ if (typeof Typed !== 'undefined') {
         attr: 'aria-label'
     });
 }
-
-// GitHub Projects Configuration
-const GITHUB_USERNAME = 'JVbarreto';
-const EXCLUDED_REPOS = ['Repositorio-Web', 'Presentinho-Sussu']; // Excluir o próprio portfólio e presentinho
-// Token de autenticação (necessário para evitar rate limit)
-// Geve um token em: https://github.com/settings/tokens
-const GITHUB_TOKEN = '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';
-// Repositórios que sempre devem aparecer (mesmo se forem privados ou forks)
-const FORCE_SHOW_REPOS = ['wa-team-talk']; // Remova 'library' pois não foi encontrado
-
 // Mapeamento de linguagens para categorias
 const languageCategoryMap = {
     'HTML': 'web',
@@ -705,7 +695,7 @@ window.addEventListener('scroll', () => {
     }
     
     lastScroll = currentScroll;
-}); }); 
+});; 
 
 
 
