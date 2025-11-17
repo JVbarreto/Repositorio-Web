@@ -676,20 +676,29 @@ const formInputs = document.querySelectorAll('.form-group input, .form-group tex
 
 formInputs.forEach(input => {
     const wrapper = input.parentElement;
+    const label = wrapper.querySelector('label');
     
+    // Show label on initial focus
     input.addEventListener('focus', () => {
         wrapper.classList.add('focused');
+        if (label) {
+            label.style.visibility = 'visible';
+        }
     });
     
+    // Validate on blur
     input.addEventListener('blur', () => {
-        if (!input.value) {
-            wrapper.classList.remove('focused');
-        }
         validateInput(input);
     });
     
+    // Real-time validation
     input.addEventListener('input', () => {
         validateInput(input);
+    });
+    
+    // Show placeholder text as visual cue
+    input.addEventListener('placeholder-change', () => {
+        // This helps with visual feedback
     });
 });
 
