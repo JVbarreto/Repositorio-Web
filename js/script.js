@@ -803,7 +803,7 @@ function announceToScreenReader(message) {
     }
 })();
 
-// Enhanced Form Submission with Loading State and EmailJS Integration
+// Contact form submission: open WhatsApp chat with a pre-filled message
 contactForm.addEventListener('submit', async (e) => {
     e.preventDefault();
     
@@ -827,53 +827,26 @@ contactForm.addEventListener('submit', async (e) => {
     try {
         // Show loading state
         submitButton.disabled = true;
-        submitButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Enviando...';
+        submitButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Abrindo WhatsApp...';
         
-        // Get form data
-        const formData = {
-            from_name: document.getElementById('name').value,
-            from_email: document.getElementById('email').value,
-            message: document.getElementById('message').value,
-            to_email: 'vitorbarreto1432@gmail.com'
-        };
-        
-        // Try to send with EmailJS
-        try {
-            // Check if emailjs is initialized
-            if (typeof emailjs !== 'undefined' && emailjs.init) {
-                const response = await emailjs.send(
-                    'service_portfolio',
-                    'template_portfolio',
-                    formData
-                );
-                console.log('✅ Email enviado:', response);
-            } else {
-                // Fallback to console if EmailJS not configured
-                console.log('📧 Dados do formulário (EmailJS não configurado):', formData);
-                // You can implement a backend call here instead
-                // Example: await fetch('/api/send-email', { method: 'POST', body: JSON.stringify(formData) })
-            }
-        } catch (emailError) {
-            // If EmailJS fails, you can implement fallback
-            console.warn('⚠️ Erro ao enviar via EmailJS. Detalhes:', emailError);
-            
-            // Fallback option: send to backend API
-            try {
-                const backendResponse = await fetch('/api/contact', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(formData)
-                });
-                if (!backendResponse.ok) throw new Error('Backend error');
-            } catch (err) {
-                console.log('📧 Formulário preenchido localmente:', formData);
-                // Even if both fail, we show success to user for demo purposes
-            }
-        }
-        
-        // Show success message
-        announceToScreenReader('Mensagem enviada com sucesso! Em breve entrarei em contato.');
-        showSuccessMessage();
+        const name = document.getElementById('name').value.trim();
+        const email = document.getElementById('email').value.trim();
+        const message = document.getElementById('message').value.trim();
+
+        // WhatsApp number (BR, without "+")
+        const whatsappNumber = '5575983132665';
+        const waMessage =
+            `Olá! Tudo bem?\n` +
+            `Meu nome é ${name}.\n` +
+            `Vim pelo seu portfólio.\n\n` +
+            `${message}\n\n` +
+            `Meu e-mail: ${email}`;
+
+        const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(waMessage)}`;
+
+        announceToScreenReader('Redirecionando para o WhatsApp...');
+        window.open(whatsappUrl, '_blank', 'noopener,noreferrer');
+
         contactForm.reset();
         
         // Reset form state
@@ -882,7 +855,7 @@ contactForm.addEventListener('submit', async (e) => {
         });
         
     } catch (error) {
-        announceToScreenReader('Erro ao enviar mensagem. Por favor, tente novamente.');
+        announceToScreenReader('Erro ao abrir o WhatsApp. Por favor, tente novamente.');
         console.error('Form submission error:', error);
         showErrorMessage();
         
